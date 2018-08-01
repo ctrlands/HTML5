@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Canvas_仿时钟</title>
+	<style type="text/css">
+		.css_canvas{
+			width: 400px;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: #f3f3f3;
+		}
+	</style>
+</head>
+<body>
+	<div class="css_canvas">
+		<canvas id="mycanvas" width="400" height="400"></canvas>
+	</div>
+
+	<script type="text/javascript">
+		/*document.body.onload = start;*/
+
+		// canvas公共信息
+		var c = document.getElementById("mycanvas");
+		var ctx = c.getContext("2d");
+		var cWidth = c.width; // 画布宽度
+		var cHeight = c.height; // 画布高度
+		var x = cWidth/2;
+		var y = cHeight/2;
+		var r = x;
+
+
+
+		/*function start(){
+			drawInCir();
+			render();
+		}*/
+		//绘制静态资源
+		function drawResource() {
+			ctx.save();
+			ctx.translate(200,200);
+			//绘制外圈圆
+			ctx.beginPath();
+			ctx.strokeStyle = "#333333";
+			ctx.lineWidth = 7;
+			ctx.arc(0,0,r-ctx.lineWidth,0,2*Math.PI);
+			ctx.stroke();
+			ctx.closePath();
+
+			// 绘制秒指示点及时间文字
+			var radiText = r - 60;// 时钟数字圆直径
+			var radiDot = r - 30; // 时钟点圆整体直径
+			var hour = [6,5,4,3,2,1,12,11,10,9,8,7];
+			var i = 0;
+			for(var deg = 0; deg < 360; deg = deg + 6){
+				var spotX = radiDot*Math.sin(deg*2*Math.PI/360);
+				var spotY = radiDot*Math.cos(deg*2*Math.PI/360);
+				var spot = r*0.025;
+				//绘制秒指示点
+				ctx.beginPath();
+				ctx.fillStyle = "#cccccc";
+				ctx.arc(spotX,spotY,spot,0,2*Math.PI);
+				ctx.fill();
+
+				//时钟数字&整点dot
+				if( deg%30 == 0 ){
+					spot = r*0.03;
+					//绘制整点指示点
+					ctx.beginPath();
+					ctx.fillStyle = "#333333";
+					ctx.arc(spotX,spotY,spot,0,2*Math.PI);
+					ctx.fill();
+
+					var textX = radiText*Math.sin(deg*2*Math.PI/360);
+					var textY = radiText*Math.cos(deg*2*Math.PI/360);
+					ctx.beginPath();
+					ctx.font = cWidth/2*0.1 + "px Arial";
+					ctx.textBaselinr = "middle";
+					ctx.textAlign = "center";
+					ctx.fillText(hour[i],textX,4+textY);
+					i++;
+				}
+			}
+		}
+
+		// 绘制秒指示点连接圆
+		function drawInCir() {
+			ctx.beginPath();
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = "#333333";
+			ctx.arc(0,0,r-30,0,2*Math.PI);
+			ctx.stroke();
+			ctx.closePath();
+		}
+
+		//绘制中心圆点
+		function drawCenDot(){
+
+			ctx.beginPath();
+			ctx.lineWidth = 2;
+			ctx.lineCap = "round";
+			ctx.arc(0,0,cWidth/2*0.05,0,2*Math.PI);
+			ctx.stroke();
+			ctx.closePath();
+		}
+	
+		// 绘制时针
+		function drawHour (h,m) {
+			ctx.save();
+			h = h + m/60;
+			ctx.beginPath();
+			ctx.rotate(2*Math.PI/12*h);
+			ctx.lineWidth = 5;
+			strokeStyle = "pink";
+			ctx.lineCap = "round";
+			ctx.moveTo(0,10);
+			ctx.lineTo(0,-r/2+15);
+			ctx.stroke();
+			ctx.closePath();
+			ctx.restore();
+		}
+		// 画分针
+		function drawMinute (m,s) {
+			m = m + s/60;
+			ctx.save();
+			ctx.beginPath();
+			ctx.rotate(2*Math.PI/60*m);
+			ctx.lineWidth = 3;
+			ctx.lineCap = "round";
+			ctx.moveTo(0,10);
+			ctx.lineTo(0,-r+85);
+			ctx.stroke();
+			ctx.closePath();
+			ctx.restore();
+		}
+		// 画秒针
+		function drawSecond (s) {
+			ctx.save();
+			ctx.beginPath();
+			ctx.rotate(2*Math.PI/60*s);
+			
+			ctx.strokeStyle = "#ff004f";
+			ctx.lineWidth = 2;
+			ctx.moveTo(0,10);
+			ctx.lineTo(0,-r/2-35);
+
+
+			ctx.stroke();
+			ctx.closePath();
+			ctx.restore();
+		}
+
+		//绘制动态指针
+		function drawGuide() {
+			ctx.clearRect(0,0,cWidth,cHeight);//清除此区域画布
+			var now = new Date();
+			h = now.getHours();
+			m = now.getMinutes();
+			s = now.getSeconds();
+			
+			drawResource();
+			drawCenDot();
+			drawInCir();
+			drawHour(h,m);
+			drawMinute(m,s);
+			drawSecond(s);
+			ctx.restore();//返回之前保存过的路径状态和属性
+		}
+
+
+		drawGuide();
+		setInterval(drawGuide,1000);
+
+
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Canvas示例</title>
+</head>
+<body>
+	<canvas id="mycanvas" width="800" height="400" style="background-color:#ccc;"></canvas>
+	<img id="scream" src="img_the_scream.jpg">
+	<script type="text/javascript">
+		var ocanvas = document.getElementById("mycanvas");
+		var ctx = ocanvas.getContext("2d");
+		ctx.fillStyle = "#f03326"; // 填充颜色
+
+		/*绘制矩形*/
+		ctx.fillRect(0,0,150,75); // (x,y,width,height)
+
+		/*绘制线条*/
+		ctx.moveTo(0,0); // 起点
+		ctx.lineTo(200,200); // 终点
+		ctx.stroke();
+
+		/*绘制圆
+		* arc(x,y,r,start,stop)
+		*/
+		ctx.beginPath();
+		ctx.arc(200,45,40,0,2*Math.PI);
+		ctx.stroke();
+		//ctx.fill();
+
+		/*
+		* 绘制文本
+		*/
+		ctx.font = "30px Arial";
+		ctx.fillText("Hello world", 10, 180);
+		ctx.strokeText("Hello world", 10, 140);
+
+		/*
+		* 绘制渐变
+		*/
+		// 创建线条渐变
+		// createLinearGradient(x,y,x1,y1)
+		var grd = ctx.createLinearGradient(0, 0, 200, 0);
+		grd.addColorStop(0, "red");
+		grd.addColorStop(1, "white");
+
+		ctx.fillStyle = grd;
+		ctx.fillRect(0, 200, 150, 80);
+
+		// 创建径向渐变/圆渐变
+		// createRadialGradient(x,y,r,x1,y1,r1)
+		var grd_r = ctx.createRadialGradient(100, 100, 5, 100, 100, 100);
+		grd_r.addColorStop("0", "red");
+		grd_r.addColorStop("1","yellow");
+
+		ctx.fillStyle = grd_r;
+		ctx.fillRect(0,300, 150, 80);
+
+		var imgs = document.getElementById("scream");
+		ctx.drawImage(imgs,200,0);
+
+
+	</script>
+</body>
+</html>
